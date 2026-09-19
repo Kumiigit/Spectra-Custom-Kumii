@@ -1,0 +1,32 @@
+@if (dataModel.watermarkInfo().spectraWatermark || dataModel.watermarkInfo().customTextEnabled) {
+  <div
+    class="vh-24 font-dinnext-medium relative flex flex-row items-center justify-center overflow-hidden rounded-b-lg text-center text-[0.68vw] tracking-[0.04em] text-white uppercase"
+    [class]="dataModel.sponsorInfo().enabled ? 'vw-328' : 'vw-500'"
+  >
+    @if (
+      dataModel.watermarkInfo().spectraWatermark &&
+      (!dataModel.watermarkInfo().customTextEnabled || currentRotationIndex() === 0)
+    ) {
+      <div class="absolute inset-0 flex w-full items-center justify-center gap-1">
+        <img
+          src="assets/misc/icon.webp"
+          class="max-h-5 max-w-5 px-0.5 py-0.5 align-middle"
+        />
+        <div class="flex items-center justify-center">
+          <p class="whitespace-nowrap">
+            {{ TranslateKeys.Watermark_Text | translate }}
+          </p>
+        </div>
+      </div>
+    } @else if (
+      dataModel.watermarkInfo().customTextEnabled &&
+      (!dataModel.watermarkInfo().spectraWatermark || currentRotationIndex() === 1)
+    ) {
+      <div
+        class="absolute inset-0 flex w-full items-center justify-center"
+      >
+        <p class="whitespace-nowrap">{{ dataModel.watermarkInfo().customText }}</p>
+      </div>
+    }
+  </div>
+}

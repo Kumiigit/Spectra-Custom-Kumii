@@ -1,0 +1,132 @@
+:host {
+  --color-attacker-primary: var(--overlay-attacker-accent, #ff0038);
+  --color-defender-primary: var(--overlay-defender-accent, #00ffad);
+}
+
+.scoreboard-shell {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 9.327vh;
+  transform: translate(-50vw, -1vh);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.scoreboard-shell.with-sponsor {
+  width: 100vw;
+}
+
+.scoreboard-art {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  shape-rendering: geometricPrecision;
+}
+
+.score-panel,
+.team-accent-line {
+  filter: none;
+}
+
+.team-accent-line {
+  stroke-linecap: butt;
+  stroke-linejoin: miter;
+}
+
+.team-logo,
+.team-identity,
+.team-score,
+.spike-marker {
+  position: absolute;
+  z-index: 2;
+}
+
+.team-logo {
+  top: 1.3vh;
+  width: 3.6vh;
+  height: 3.6vh;
+}
+
+.team-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: var(--overlay-icon-filter);
+}
+
+.team-logo-left {
+  left: 31.625vw;
+}
+
+.team-logo-right {
+  left: calc(68.375vw - 3.6vh);
+}
+
+.team-identity {
+  top: 0.95vh;
+  width: 5.4vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--overlay-foreground);
+}
+
+.team-identity-left {
+  left: 34.3vw;
+}
+
+.team-identity-right {
+  left: 60.3vw;
+}
+
+.team-code {
+  font-size: 3vh;
+  line-height: 0.88;
+  white-space: nowrap;
+}
+
+.team-seed {
+  margin-top: 0.28vh;
+  color: var(--overlay-muted);
+  font-size: 1.02vh;
+  line-height: 1;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.team-score {
+  top: 0.54vh;
+  width: 4.4vw;
+  color: var(--overlay-foreground);
+  font-size: 5.05vh;
+  line-height: 1;
+  text-align: center;
+  text-shadow: none;
+}
+
+.team-score-left {
+  left: 40.45vw;
+}
+
+.team-score-right {
+  left: 55.15vw;
+}
+
+.spike-marker {
+  top: 8.45vh;
+  left: 50vw;
+  transform: translateX(-50%);
+}
+
+.spike-side {
+  width: 0;
+  height: 0;
+  border-top: 5px solid transparent;
+  border-right: 10px solid white;
+  border-bottom: 5px solid transparent;
+}

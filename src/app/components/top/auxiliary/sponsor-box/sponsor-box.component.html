@@ -1,0 +1,36 @@
+@if (dataModel.sponsorInfo().enabled && dataModel.sponsorInfo().sponsors.length > 0) {
+  @if (variant() === "scoreboard") {
+    <div class="relative h-full w-full">
+      @for (sponsor of dataModel.sponsorInfo().sponsors; track $index) {
+        <img
+          class="sponsor-image absolute top-1/2 left-1/2 max-h-full max-w-full -translate-x-1/2 -translate-y-1/2 object-contain"
+          [class.active]="currentIndex() === $index"
+          [src]="sponsor"
+          [alt]="'Sponsor ' + ($index + 1)"
+        />
+      }
+    </div>
+  } @else {
+    <div
+      class="sponsor-header vw-245 vh-60 absolute top-0 -right-60"
+    >
+      <svg
+        class="absolute inset-0 h-full w-full overflow-visible"
+        viewBox="0 0 200 60"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path d="M0 0H200V60H50Z" fill="var(--overlay-sponsor-border)" />
+        <path d="M2 1H199V59H50.5Z" fill="var(--overlay-surface)" />
+      </svg>
+      @for (sponsor of dataModel.sponsorInfo().sponsors; track $index) {
+        <img
+          class="sponsor-image max-vw-105! max-vh-36! absolute top-1/2 left-[62%] -translate-x-1/2 -translate-y-1/2 object-contain"
+          [class.active]="currentIndex() === $index"
+          [src]="sponsor"
+          [alt]="'Sponsor ' + ($index + 1)"
+        />
+      }
+    </div>
+  }
+}

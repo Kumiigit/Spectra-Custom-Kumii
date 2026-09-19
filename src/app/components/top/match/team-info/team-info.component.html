@@ -1,0 +1,157 @@
+<div
+  class="scoreboard-shell"
+  [class.with-sponsor]="dataModel.sponsorInfo().enabled"
+>
+  <svg
+    class="scoreboard-art"
+    viewBox="0 0 1920 94"
+    preserveAspectRatio="none"
+    aria-hidden="true"
+  >
+    <defs>
+      <linearGradient id="leftDefender" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="var(--overlay-surface)" />
+        <stop offset="0.58" stop-color="var(--overlay-surface-soft)" />
+        <stop offset="1" stop-color="var(--overlay-surface-soft)" />
+      </linearGradient>
+      <linearGradient id="leftAttacker" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="var(--overlay-surface)" />
+        <stop offset="0.58" stop-color="var(--overlay-surface-soft)" />
+        <stop offset="1" stop-color="var(--overlay-surface-soft)" />
+      </linearGradient>
+      <linearGradient id="rightDefender" x1="1" y1="0" x2="0" y2="0">
+        <stop offset="0" stop-color="var(--overlay-surface)" />
+        <stop offset="0.58" stop-color="var(--overlay-surface-soft)" />
+        <stop offset="1" stop-color="var(--overlay-surface-soft)" />
+      </linearGradient>
+      <linearGradient id="rightAttacker" x1="1" y1="0" x2="0" y2="0">
+        <stop offset="0" stop-color="var(--overlay-surface)" />
+        <stop offset="0.58" stop-color="var(--overlay-surface-soft)" />
+        <stop offset="1" stop-color="var(--overlay-surface-soft)" />
+      </linearGradient>
+      <linearGradient id="defenderScore" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="var(--overlay-defender-score-start)" />
+        <stop offset="0.62" stop-color="var(--overlay-defender-score-mid)" />
+        <stop offset="1" stop-color="var(--overlay-defender-score-end)" />
+      </linearGradient>
+      <linearGradient id="attackerScore" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="var(--overlay-attacker-score-start)" />
+        <stop offset="0.62" stop-color="var(--overlay-attacker-score-mid)" />
+        <stop offset="1" stop-color="var(--overlay-attacker-score-end)" />
+      </linearGradient>
+    </defs>
+
+    <!-- The wing footprint and map/sponsor clearance are unchanged. -->
+    <path d="M0 0H620L622 24H0Z" fill="var(--overlay-surface)" fill-opacity="0.96" />
+    <path
+      d="M1920 0H1300L1298 24H1920Z"
+      fill="var(--overlay-surface)"
+      fill-opacity="0.96"
+    />
+
+    <path
+      d="M548 -3H862L912 45L883 64H609Z"
+      [attr.fill]="dataModel.teams()[0].isAttacking ? 'url(#leftAttacker)' : 'url(#leftDefender)'"
+      [attr.stroke]="dataModel.teams()[0].isAttacking ? 'var(--color-attacker-primary)' : 'var(--color-defender-primary)'"
+      stroke-opacity="0.36"
+      stroke-width="1.25"
+    />
+    <path
+      d="M1372 -3H1058L1008 45L1037 64H1311Z"
+      [attr.fill]="dataModel.teams()[1].isAttacking ? 'url(#rightAttacker)' : 'url(#rightDefender)'"
+      [attr.stroke]="dataModel.teams()[1].isAttacking ? 'var(--color-attacker-primary)' : 'var(--color-defender-primary)'"
+      stroke-opacity="0.36"
+      stroke-width="1.25"
+    />
+
+    <path
+      class="score-panel"
+      d="M776 -3H862L912 45L883 64H776Z"
+      [attr.fill]="dataModel.teams()[0].isAttacking ? 'url(#attackerScore)' : 'url(#defenderScore)'"
+    />
+    <path
+      class="score-panel"
+      d="M1008 45L1058 -3H1144V64H1037Z"
+      [attr.fill]="dataModel.teams()[1].isAttacking ? 'url(#attackerScore)' : 'url(#defenderScore)'"
+    />
+
+    <!-- Centre backing -->
+    <path
+      d="M850 0H1070L1037 64H1005L980 86H940L915 64H883Z"
+      fill="var(--overlay-surface)"
+      stroke="var(--overlay-border)"
+      stroke-width="1"
+    />
+    <path d="M869 0L909 61" fill="none" stroke="var(--overlay-foreground)" stroke-opacity="0.09" />
+    <path d="M1051 0L1011 61" fill="none" stroke="var(--overlay-foreground)" stroke-opacity="0.09" />
+
+    <path
+      class="team-accent-line"
+      d="M0 24H573L609 64H883"
+      fill="none"
+      [attr.stroke]="dataModel.teams()[0].isAttacking ? 'var(--color-attacker-primary)' : 'var(--color-defender-primary)'"
+      stroke-width="2"
+    />
+    <path
+      class="team-accent-line"
+      d="M1037 64H1311L1347 24H1920"
+      fill="none"
+      [attr.stroke]="dataModel.teams()[1].isAttacking ? 'var(--color-attacker-primary)' : 'var(--color-defender-primary)'"
+      stroke-width="2"
+    />
+    <path
+      class="team-accent-line"
+      d="M548 -3L609 64"
+      fill="none"
+      [attr.stroke]="dataModel.teams()[0].isAttacking ? 'var(--color-attacker-primary)' : 'var(--color-defender-primary)'"
+      stroke-width="2"
+    />
+    <path
+      class="team-accent-line"
+      d="M1372 -3L1311 64"
+      fill="none"
+      [attr.stroke]="dataModel.teams()[1].isAttacking ? 'var(--color-attacker-primary)' : 'var(--color-defender-primary)'"
+      stroke-width="2"
+    />
+  </svg>
+
+  <div class="team-logo team-logo-left">
+    <img [src]="dataModel.teams()[0].teamUrl" alt="" />
+  </div>
+  <div class="team-identity team-identity-left">
+    <span class="font-tungsten team-code">{{ dataModel.teams()[0].teamTricode }}</span>
+    @if (dataModel.seedingInfo().left) {
+      <span class="font-dinnext-medium team-seed">{{ dataModel.seedingInfo().left.toUpperCase() }}</span>
+    }
+  </div>
+  <span class="font-foundry-extrabold team-score team-score-left">{{ dataModel.teams()[0].roundsWon }}</span>
+
+  <span class="font-foundry-extrabold team-score team-score-right">{{ dataModel.teams()[1].roundsWon }}</span>
+  <div class="team-identity team-identity-right">
+    <span class="font-tungsten team-code">{{ dataModel.teams()[1].teamTricode }}</span>
+    @if (dataModel.seedingInfo().right) {
+      <span class="font-dinnext-medium team-seed">{{ dataModel.seedingInfo().right.toUpperCase() }}</span>
+    }
+  </div>
+  <div class="team-logo team-logo-right">
+    <img [src]="dataModel.teams()[1].teamUrl" alt="" />
+  </div>
+
+  <div class="spike-marker">
+    <div class="relative flex items-center">
+      <div
+        class="spike-side absolute"
+        [class]="dataModel.teams()[0].isAttacking ? 'left-[-15px]' : 'right-[-15px] scale-x-[-1]'"
+      ></div>
+      <img
+        src="assets/misc/Spike_Icon.svg"
+        alt=""
+        [class]="dataModel.spikeState().planted
+          ? 'opacity-0'
+          : dataModel.spikeState().defused || dataModel.spikeState().detonated
+            ? 'opacity-100 delay-300'
+            : 'opacity-100'"
+      />
+    </div>
+  </div>
+</div>

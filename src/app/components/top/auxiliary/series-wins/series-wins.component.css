@@ -1,0 +1,18 @@
+:host > div:first-child {
+  display: none;
+}
+
+.mapwin-pip {
+  position: relative;
+  width: 6px;
+  height: 6px;
+  border: 2px solid;
+  rotate: 45deg;
+  border-color: #cacaca;
+  background-color: #1a1a1a;
+}
+
+.full {
+  background-color: #ffffff;
+  border-color: #ffffff;
+}

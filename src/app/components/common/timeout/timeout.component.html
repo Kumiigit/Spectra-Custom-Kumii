@@ -1,0 +1,129 @@
+<div
+  class="vw-788 vh-178 animate-duration-300 relative top-0"
+  [class.hidden]="hide"
+  [class.animate-transition]="inAnimation"
+  [class.animate-transition-out]="outAnimation"
+>
+  @if (timeoutInfo().techPause) {
+    <div class="absolute top-0 left-0 flex h-full w-full items-center justify-center">
+      <svg
+        class="tech-pause-art"
+        xmlns="http://www.w3.org/2000/svg"
+        width="788"
+        height="124"
+        viewBox="0 0 788 124"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <defs>
+          <linearGradient id="tech-pause-surface" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--overlay-surface-soft)" stop-opacity="0.98" />
+            <stop offset="1" stop-color="var(--overlay-surface)" stop-opacity="0.98" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M42 8H746L788 44V88L760 112H438L426 124H362L350 112H28L0 88V44Z"
+          fill="url(#tech-pause-surface)"
+          stroke="var(--overlay-border)"
+          stroke-width="1"
+        />
+        <path
+          d="M42 8H322L334 20"
+          fill="none"
+          [attr.stroke]="dataModel.teams()[0].isAttacking ? '#ff174b' : '#00ffad'"
+          stroke-width="2.5"
+        />
+        <path
+          d="M746 8H466L454 20"
+          fill="none"
+          [attr.stroke]="dataModel.teams()[1].isAttacking ? '#ff174b' : '#00ffad'"
+          stroke-width="2.5"
+        />
+        <path
+          d="M0 88L28 112H350L362 124H390"
+          fill="none"
+          [attr.stroke]="dataModel.teams()[0].isAttacking ? '#ff174b' : '#00ffad'"
+          stroke-width="2.5"
+        />
+        <path
+          d="M398 124H426L438 112H760L788 88"
+          fill="none"
+          [attr.stroke]="dataModel.teams()[1].isAttacking ? '#ff174b' : '#00ffad'"
+          stroke-width="2.5"
+        />
+        <path d="M83 9L120 46V104" fill="none" stroke="var(--overlay-foreground)" stroke-opacity="0.055" />
+        <path d="M705 9L668 46V104" fill="none" stroke="var(--overlay-foreground)" stroke-opacity="0.055" />
+        <path
+          d="M379 17H387V38H379Z"
+          [attr.fill]="dataModel.teams()[0].isAttacking ? '#ff174b' : '#00ffad'"
+        />
+        <path
+          d="M401 17H409V38H401Z"
+          [attr.fill]="dataModel.teams()[1].isAttacking ? '#ff174b' : '#00ffad'"
+        />
+      </svg>
+      <p class="tech-pause-label font-foundry-extrabold">
+        {{ TranslateKeys.Timeout_Techpause | translate }}
+      </p>
+    </div>
+  } @else {
+    <div class="absolute top-0 left-0 flex h-full w-full items-center justify-center">
+      <svg
+        class="team-timeout-art"
+        xmlns="http://www.w3.org/2000/svg"
+        width="788"
+        height="124"
+        viewBox="0 0 788 124"
+        preserveAspectRatio="xMidYMid meet"
+      >
+        <defs>
+          <linearGradient id="team-timeout-surface" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--overlay-surface-soft)" stop-opacity="0.98" />
+            <stop offset="1" stop-color="var(--overlay-surface)" stop-opacity="0.98" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M42 8H746L788 44V88L760 112H438L426 124H362L350 112H28L0 88V44Z"
+          fill="url(#team-timeout-surface)"
+          stroke="var(--overlay-border)"
+          stroke-width="1"
+        />
+        <path
+          d="M42 8H322L334 20"
+          fill="none"
+          [attr.stroke]="timeoutTeam().isAttacking ? '#ff174b' : '#00ffad'"
+          stroke-width="2.5"
+        />
+        <path
+          d="M746 8H466L454 20"
+          fill="none"
+          [attr.stroke]="timeoutTeam().isAttacking ? '#ff174b' : '#00ffad'"
+          stroke-width="2.5"
+        />
+        <path
+          d="M0 88L28 112H350L362 124H390"
+          fill="none"
+          [attr.stroke]="timeoutTeam().isAttacking ? '#ff174b' : '#00ffad'"
+          stroke-width="2.5"
+        />
+        <path
+          d="M398 124H426L438 112H760L788 88"
+          fill="none"
+          [attr.stroke]="timeoutTeam().isAttacking ? '#ff174b' : '#00ffad'"
+          stroke-width="2.5"
+        />
+        <path d="M83 9L120 46V104" fill="none" stroke="var(--overlay-foreground)" stroke-opacity="0.055" />
+        <path d="M705 9L668 46V104" fill="none" stroke="var(--overlay-foreground)" stroke-opacity="0.055" />
+      </svg>
+      <div class="team-timeout-content">
+        <p class="team-timeout-label font-foundry-extrabold">
+          {{ TranslateKeys.Timeout_Tactical | translate: { teamName: timeoutTeam().teamName } }}
+        </p>
+        <div class="team-timeout-meta font-foundry-extrabold">
+          <span>{{ timeoutTeam().isAttacking ? "ATK" : "DEF" }}</span>
+          <img [src]="timeoutTeam().teamUrl" alt="" />
+          <span>{{ timeoutTeam().teamTricode }}</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>
