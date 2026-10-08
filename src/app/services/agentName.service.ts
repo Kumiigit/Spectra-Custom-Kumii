@@ -4,6 +4,12 @@ import { Injectable } from "@angular/core";
   providedIn: "root",
 })
 export class AgentNameService {
+  static normalizeAgentInternalName(agent: string): string {
+    // Live feeds can use different casing (for example AggroBot vs Aggrobot).
+    // Keep unknown names intact so newly added agents are not silently discarded.
+    return Object.keys(AgentName).find((name) => name.toLowerCase() === agent.toLowerCase()) ?? agent;
+  }
+
   static getAgentName(agent: string) {
     return AgentName[agent as keyof typeof AgentName];
   }

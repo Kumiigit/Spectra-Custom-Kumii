@@ -1,0 +1,6 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>Choose capture</title>
+<style>body{background:#0b141a;color:#e7eff3;font:15px system-ui;margin:24px}h1{font-size:22px}p{color:#9bafb9}#sources{display:grid;grid-template-columns:1fr 1fr;gap:12px}button{background:#13232d;color:inherit;border:1px solid #31444e;border-radius:10px;text-align:left;padding:12px;cursor:pointer}button:hover{border-color:#48ddb4}img{width:100%;height:150px;object-fit:contain;display:block;margin-bottom:8px}span{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}</style>
+<h1>Choose the HUD-enabled VALORANT window</h1><p>Only the selected source is read. No video is sent to the host. Close this window to cancel.</p><div id="sources"></div>
+<script>
+window.capturePicker.sources().then(sources=>{for(const source of sources){const button=document.createElement('button'),image=document.createElement('img'),label=document.createElement('span');image.src=source.thumbnail;image.alt='';label.textContent=source.name;button.append(image,label);button.onclick=()=>window.capturePicker.choose(source.id);document.getElementById('sources').append(button);}});
+</script></html>

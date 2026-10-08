@@ -1,4 +1,4 @@
-import { computed, inject, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal, OnDestroy } from "@angular/core";
 import { SocketService } from "./SocketService";
 import { IMapbanSessionData, IMatchData, ISponsorInfo, ITournamentInfo } from "./Types";
 import { ActivatedRoute } from "@angular/router";
@@ -6,18 +6,82 @@ import { Config } from "../shared/config";
 import { isEqual } from "lodash";
 import { i18nHelper } from "./i18nHelper";
 import { TranslateService } from "@ngx-translate/core";
+import { AgentNameService } from "./agentName.service";
+import { applyLocalHp, LocalHpReading } from "./localHp";
 
 @Injectable({
   providedIn: "root",
 })
-export class DataModelService {
+export class DataModelService implements OnDestroy {
   protected route = inject(ActivatedRoute);
   protected config = inject(Config);
   protected translate = inject(TranslateService);
+  private serverMatch: IMatchData | null = null;
+  private localHp: LocalHpReading | LocalHpReading[] | null = null;
+  private hpTimer?: ReturnType<typeof setTimeout>;
+  private hpEnabled = false;
+  private destroyed = false;
+  private hpStateSignature = '';
+  private hpStateQueue: Promise<boolean> = Promise.resolve(false);
+  private readonly hpPreview = ['127.0.0.1','localhost'].includes(location.hostname)&&new URLSearchParams(location.search).get('hpPreview')==='1';
+
+  private async loadHpPreview() {
+    const response=await fetch('/hp-reader/preview-roster.json');
+    const roster: {name:string;agentInternal:string}[]=await response.json();
+    const match: IMatchData=structuredClone(initialMatchData);
+    Object.assign(match,{groupCode:'HP-PREVIEW',isRunning:true,roundNumber:1,roundPhase:'combat'});
+    for(const [side,team] of match.teams.entries()){
+      Object.assign(team,{teamName:side?'RED TEST':'GREEN TEST',teamTricode:side?'RED':'GRN',teamUrl:'assets/misc/icon.webp',roundsWon:side?8:5,isAttacking:side===0});
+      team.players=roster.slice(side*5,side*5+5).map((p,i)=>({...p,fullName:p.name+'#DEMO',playerId:side*5+i,
+        isAlive:true,locked:true,isObserved:false,armorName:'',money:3500,moneySpent:0,highestWeapon:'Vandal',isCaptain:false,
+        currUltPoints:0,maxUltPoints:8,ultReady:false,hasSpike:false,scoreboardAvailable:true,
+        auxiliaryAvailable:{health:true,abilities:false,scoreboard:true},kills:0,deaths:0,assists:0,killsThisRound:0,
+        health:100,deathsThisRound:0,killedPlayerNames:[],abilities:{grenade:0,ability1:0,ability2:0},iconNameSuffix:''}));
+    }
+    this.onMatchUpdate(match);
+  }
+
+  private publishHpState() {
+    if(!this.hpEnabled||!this.serverMatch)return;
+    const match=this.serverMatch;
+    const state={groupCode:this.groupCode(),roundNumber:match.roundNumber,roundPhase:match.roundPhase,map:match.map,isRunning:match.isRunning,
+      players:match.teams.flatMap(t=>t.players).map(p=>({name:p.name,fullName:p.fullName||'',isAlive:p.isAlive===true}))};
+    const signature=JSON.stringify(state);
+    if(signature===this.hpStateSignature)return;
+    this.hpStateSignature=signature;this.localHp=null;
+    // Preserve death -> alive transitions even when they arrive between polls.
+    this.hpStateQueue=this.hpStateQueue.then(async()=>{
+      try {const response=await fetch('http://127.0.0.1:5210/hp/state',{method:'POST',headers:{'Content-Type':'application/json'},body:signature,signal:AbortSignal.timeout(900)});return response.ok;}
+      catch {return false;}
+    });
+  }
+
+  private async pollLocalHp() {
+    try {
+      this.publishHpState();
+      const signature=this.hpStateSignature;
+      if(!await this.hpStateQueue){this.hpStateSignature='';throw Error('HP lifecycle unavailable');}
+      const response = await fetch('http://127.0.0.1:5210/hp/all', {cache:'no-store', signal:AbortSignal.timeout(900)});
+      // A failed poll is not an instruction to restore the server's default
+      // health. Keep the last sample; applyLocalHp enforces its original age.
+      if (response.ok) {const readings=await response.json();if(signature===this.hpStateSignature)this.localHp=readings;}
+    } catch { /* Retain the last sample through brief delivery interruptions. */ }
+    if (this.destroyed) return;
+    if (this.serverMatch) {
+      const next = applyLocalHp(this.serverMatch, this.hpEnabled ? this.localHp : null, this.groupCode());
+      if (!isEqual(next, this.match())) this.match.set(next);
+    }
+    if (this.hpEnabled) this.hpTimer = setTimeout(() => this.pollLocalHp(), 200);
+  }
+
+  ngOnDestroy() {
+    this.destroyed = true;
+    clearTimeout(this.hpTimer);
+  }
 
   constructor() {
     this.route.queryParams.subscribe((params) => {
-      this.groupCode.set(((params["groupCode"] as string) || "").toUpperCase());
+      this.groupCode.set(this.hpPreview?'HP-PREVIEW':((params["groupCode"] as string) || "").toUpperCase());
       this.sessionId.set(params["sessionId"] || "");
       const paramLang = params["lang"]?.toLowerCase() || "en";
       console.log("Setting language to", paramLang);
@@ -25,6 +89,12 @@ export class DataModelService {
       this.translate.use(this.language());
       this.hideAuxiliary.set(params["hideAuxiliary"] === "true");
       this.hideAuxiliaryText.set(params["hideAuxiliaryText"] === "true");
+      const enabled = params['hpReader'] === '1' && ['127.0.0.1','localhost'].includes(location.hostname);
+      if (enabled && !this.hpEnabled) { this.hpEnabled = true; void this.pollLocalHp(); }
+      else if (!enabled && this.hpEnabled) {
+        this.hpEnabled = false; this.localHp = null; clearTimeout(this.hpTimer);
+        if (this.serverMatch) this.match.set(this.serverMatch);
+      }
     });
 
     if (this.route.firstChild && this.route.firstChild.firstChild) {
@@ -33,6 +103,7 @@ export class DataModelService {
       });
     }
 
+    if(this.hpPreview){void this.loadHpPreview();return;}
     if (!this.config.serverEndpoint || this.config.serverEndpoint.length === 0) {
       console.error("No server endpoint configured, cannot connect to match data");
       return;
@@ -58,13 +129,22 @@ export class DataModelService {
   }
 
   private onMatchUpdate(data: any) {
+    for (const team of data?.teams ?? []) {
+      for (const player of team.players ?? []) {
+        if (typeof player.agentInternal === "string") {
+          player.agentInternal = AgentNameService.normalizeAgentInternalName(player.agentInternal);
+        }
+      }
+    }
     // Construct map for name overrides if it's a string (from JSON).
     // The server keeps it as JSON to avoid having to (de)-serialize multiple times.
     const tempOverrides = data?.tools?.nameOverrides?.overrides || null;
     if (typeof tempOverrides === "string") {
       data.tools.nameOverrides.overrides = this.jsonToMap(tempOverrides);
     }
-    this.match.set(data);
+    this.serverMatch = data;
+    this.publishHpState();
+    this.match.set(applyLocalHp(data, this.hpEnabled ? this.localHp : null, this.groupCode()));
   }
 
   private jsonToMap(json: string): Map<string, string> {

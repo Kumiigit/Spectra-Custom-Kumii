@@ -1,0 +1,22 @@
+{
+  "name": "spectra-ocr-observer",
+  "version": "0.1.0",
+  "description": "Spectra observer health reader",
+  "author": "Spectra",
+  "private": true,
+  "main": "main.cjs",
+  "scripts": {"start": "electron .", "build": "electron-builder --win nsis --x64 --publish never"},
+  "devDependencies": {"electron": "44.7.0", "electron-builder": "26.15.3"},
+  "build": {
+    "appId": "local.spectra.ocr.observer",
+    "productName": "Spectra OCR Observer",
+    "directories": {"output": "../public/hp-reader/downloads/desktop"},
+    "files": ["main.cjs", "preload.cjs", "source-picker.html"],
+    "extraResources": [
+      {"from": "../scripts/ocr-observer.cjs", "to": "ocr-observer.cjs"},
+      {"from": "../public/hp-reader", "to": "hp-reader", "filter": ["dual.html", "dual.mjs", "logic.mjs", "style.css", "dashboard.css", "desktop.css", "desktop.mjs", "preview-roster.json"]}
+    ],
+    "win": {"target": "nsis", "signAndEditExecutable": false},
+    "nsis": {"oneClick": false, "perMachine": false, "allowToChangeInstallationDirectory": true, "createDesktopShortcut": true, "createStartMenuShortcut": true, "artifactName": "Spectra-OCR-Observer-Setup-${version}.exe"}
+  }
+}

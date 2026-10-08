@@ -8,7 +8,7 @@
   },
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --configuration development",
+    "start": "node scripts/start-dev.cjs",
     "start-docker": "ng serve --port=80 --host 0.0.0.0",
     "build": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
@@ -43,6 +43,7 @@
     "@angular/build": "^20.2.0",
     "@angular/cli": "^20.2.0",
     "@angular/compiler-cli": "^20.2.1",
+    "@tesseract.js-data/eng": "1.0.0",
     "@types/jasmine": "~5.1.7",
     "@types/lodash": "^4",
     "angular-eslint": "20.2.0",
@@ -54,8 +55,10 @@
     "karma-coverage": "~2.2.1",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "pngjs": "7.0.0",
     "prettier": "3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.14",
+    "tesseract.js": "6.0.1",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.33.1"
   },

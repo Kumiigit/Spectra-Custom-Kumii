@@ -1,0 +1,16 @@
+body.desktop-client #overlay,body.desktop-client #replay,body.desktop-client #demo,body.desktop-client .toolbar .file,body.desktop-client footer{display:none}
+body.desktop-client main{padding:24px;max-width:1600px;margin:auto}
+body.desktop-client .dashboard-header h1{font-size:26px}
+body.desktop-client #receiver{width:250px}
+body.desktop-client #pairKey{width:270px}
+body.desktop-client .pairing-panel{border:1px solid #31444e;border-radius:12px;padding:16px;background:#13232d;margin:12px 0 18px}
+body.desktop-client .pairing-panel summary{font-size:18px;font-weight:650;margin-bottom:8px;pointer-events:none;list-style:none}
+body.desktop-client .connection-bar{flex-wrap:wrap}
+body.desktop-client .toolbar{margin-top:12px}
+body.desktop-client main{padding:16px}
+body.desktop-client .dashboard-header{margin-bottom:8px}
+body.desktop-client .pairing-panel{padding:12px;margin:8px 0 12px}
+body.desktop-client .toolbar{padding:8px;margin-top:8px}
+body.desktop-client .player-tile{padding:7px 10px;gap:3px 10px}
+body.desktop-client #stage{max-width:390px}
+body.desktop-client .inspector{padding:12px}

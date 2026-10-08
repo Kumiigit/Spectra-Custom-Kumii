@@ -1,4 +1,4 @@
-import { Component, computed, inject, effect } from "@angular/core";
+import { Component, computed, inject, effect, OnDestroy } from "@angular/core";
 import { DataModelService } from "../../../../services/dataModel.service";
 
 @Component({
@@ -7,7 +7,7 @@ import { DataModelService } from "../../../../services/dataModel.service";
   templateUrl: "./spike-planted.component.html",
   styleUrl: "./spike-planted.component.css",
 })
-export class SpikePlantedComponent {
+export class SpikePlantedComponent implements OnDestroy {
   dataModel = inject(DataModelService);
 
   readonly show = computed(() => {
@@ -22,7 +22,7 @@ export class SpikePlantedComponent {
   readonly effectRef = effect(() => {
     if (this.show() && !this.isBlinking) {
       this.startBlink();
-    } else {
+    } else if (!this.show()) {
       this.endBlink();
     }
   });
@@ -34,6 +34,10 @@ export class SpikePlantedComponent {
   isBlinking = false;
   blinkStartTime = 0;
   blinkLastTime = 0;
+
+  ngOnDestroy() {
+    this.endBlink();
+  }
 
   protected startBlink() {
     this.isBlinking = true;

@@ -1,0 +1,12 @@
+[
+  {"name":"Nova","agentInternal":"Sarge"},
+  {"name":"Echo","agentInternal":"Stealth"},
+  {"name":"Flux","agentInternal":"Guide"},
+  {"name":"Pixel","agentInternal":"Clay"},
+  {"name":"Orbit","agentInternal":"Pandemic"},
+  {"name":"Rift","agentInternal":"Gumshoe"},
+  {"name":"Blaze","agentInternal":"Stealth"},
+  {"name":"Ghost","agentInternal":"Guide"},
+  {"name":"Frost","agentInternal":"Clay"},
+  {"name":"Cipher","agentInternal":"Sarge"}
+]

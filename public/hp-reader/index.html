@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Spectra · HP reader test</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="vendor/tesseract.min.js" defer></script>
+  <script type="module" src="reader.mjs"></script>
+</head>
+<body>
+  <main>
+    <header><span class="eyebrow">SPECTRA / EXPERIMENTAL</span><h1>Observer HUD · HP reader</h1>
+      <p>One viewed player. Local processing. Optional HP forwarding to your local overlay.</p><p><a href="dual.html?groupCode=VLXEUROPE">Two-player top-bar reader · Raze / Tejo</a></p></header>
+    <section class="controls">
+      <label>Read from <select id="mode"><option value="digits">Bottom HP digits</option><option value="bar">Top health bar (estimated)</option></select></label>
+      <button id="preset">Use current Viper bar position</button>
+      <button id="share">1 · Select game window</button>
+      <label class="file">Or test an image<input id="file" type="file" accept="image/png,image/jpeg,image/webp"></label>
+      <button id="track" disabled>3 · Start tracking</button>
+      <button id="stop" disabled>Stop & release capture</button>
+    </section>
+    <p id="status" role="status">Select Valorant or its display in the browser picker. No audio is captured.</p>
+    <section class="panel">
+      <h2>Send HP to the overlay</h2>
+      <div class="fields"><label>Group code <input id="groupCode" type="text" placeholder="VLXEUROPE"></label><label>Exact player name <input id="playerName" type="text" placeholder="Mxr1a"></label></div>
+      <p><label><input id="forward" type="checkbox"> Send live readings to this player</label> · <a id="overlayLink" target="_blank" rel="noopener">Open linked overlay</a></p>
+      <p id="bridgeStatus" role="status">Forwarding off. Bind the player whose bottom HUD you are capturing. Change this binding when spectating someone else.</p>
+    </section>
+    <div class="grid">
+      <section class="panel"><h2>2 · Select the reading region</h2>
+        <p id="regionHelp">Digits: include room for 100, excluding shields. Top bar: select its full inner width, excluding the border. The preset is for the current single-player Viper layout, not automatic agent detection. Reselect when portraits move. Keep this page visible alongside the game.</p>
+        <div id="stage"><canvas id="frame" width="960" height="540" aria-label="Capture preview: drag to select HP region"></canvas><div id="selection"></div></div>
+        <div class="fields"><label>X <input id="x" type="number" min="0" value="0"></label><label>Y <input id="y" type="number" min="0" value="0"></label><label>Width <input id="w" type="number" min="4" value="0"></label><label>Height <input id="h" type="number" min="4" value="0"></label></div>
+        <p>Coordinates are in source pixels; you can adjust them above. Reselect the area if the game resolution changes.</p>
+      </section>
+      <aside class="panel"><h2>Detected HP</h2><output id="hp">—</output><p id="quality">Waiting for a source</p>
+        <label>White-digit threshold <input id="threshold" type="range" min="120" max="245" value="190"><span id="thresholdValue">190</span></label>
+        <h2>Filtered crop</h2><canvas id="crop" width="240" height="100"></canvas>
+        <p>Black digits on white should be clear here. Two matching readings are required; missing/uncertain readings expire after 1.5 seconds, not to zero.</p>
+        <h2>Recent changes</h2><ol id="history"></ol>
+      </aside>
+    </div>
+    <footer>Captures and OCR remain in this browser. No game-memory access, GStack connection or uploads. Stop sharing when finished. A hidden HUD is unknown—not proof of death.</footer>
+  </main>
+  <video id="source" muted playsinline hidden></video>
+</body>
+</html>

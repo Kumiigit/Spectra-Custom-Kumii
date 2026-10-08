@@ -27,6 +27,11 @@ yarn start
 Open `http://localhost:4200/testing` to preview the overlay with sample data.
 The live overlay is available at `http://localhost:4200/overlay`.
 
+Assets, fonts and language files are included. For HP preview use
+`yarn start --port 3000 --host 127.0.0.1` and open `/hp-reader/dual.html`.
+See [HP reader setup](public/hp-reader/README.md) for remote observer pairing.
+Recordings and built installers are intentionally excluded from Git.
+
 ## Production build
 
 ```bash

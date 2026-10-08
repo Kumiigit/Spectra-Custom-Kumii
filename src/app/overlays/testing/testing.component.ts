@@ -576,7 +576,7 @@ export class TestingComponent implements OnInit {
   //#region General button handlers
   changeRoundPhase() {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       if (ret.roundPhase == "shopping") {
         ret.roundPhase = "combat";
       } else if (ret.roundPhase == "combat") {
@@ -599,7 +599,7 @@ export class TestingComponent implements OnInit {
 
   swapTeamColors() {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       ret.teams.forEach((team: any) => {
         team.isAttacking = !team.isAttacking;
         team.players.forEach((player: any) => {
@@ -614,7 +614,7 @@ export class TestingComponent implements OnInit {
 
   plantSpike() {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       ret.spikeState.planted = true;
       ret.spikeState.defused = false;
       ret.spikeState.detonated = false;
@@ -627,7 +627,7 @@ export class TestingComponent implements OnInit {
 
   defuseSpike() {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       ret.spikeState.planted = false;
       ret.spikeState.defused = true;
       ret.spikeState.detonated = false;
@@ -660,7 +660,7 @@ export class TestingComponent implements OnInit {
       // Start tech pause
       this.stopTimeoutTimer(); // Stop any existing timeout first
       this.dataModel.match.update((v) => {
-        const ret = v;
+        const ret = structuredClone(v);
         ret.timeoutState.techPause = true;
         ret.timeoutState.leftTeam = false;
         ret.timeoutState.rightTeam = false;
@@ -675,10 +675,12 @@ export class TestingComponent implements OnInit {
 
   winRound(teamIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       const team = ret.teams[teamIndex];
       team.roundsWon++;
-      team.roundsWon %= 13;
+      ret.attackersWon = team.isAttacking;
+      ret.roundPhase = "end";
+      ret.spikeState = { planted: false, defused: false, detonated: false };
       ret.roundNumber = ret.teams[0].roundsWon + ret.teams[1].roundsWon + 1;
       return ret;
     });
@@ -698,7 +700,7 @@ export class TestingComponent implements OnInit {
     // Start timeout for the team
     this.stopTimeoutTimer(); // Stop any existing timeout first
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       ret.timeoutState.techPause = false;
       ret.timeoutState.leftTeam = teamIndex == 0;
       ret.timeoutState.rightTeam = teamIndex == 1;
@@ -712,7 +714,7 @@ export class TestingComponent implements OnInit {
   //#region Player button handlers
   killPlayer(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       ret.teams[teamIndex].players[playerIndex].isAlive = false;
       ret.teams[teamIndex].players[playerIndex].health = 0;
       ret.teams[teamIndex].players[playerIndex].deaths += 1;
@@ -723,7 +725,7 @@ export class TestingComponent implements OnInit {
 
   revivePlayer(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       ret.teams[teamIndex].players[playerIndex].isAlive = true;
       ret.teams[teamIndex].players[playerIndex].health = 100;
       return ret;
@@ -732,7 +734,7 @@ export class TestingComponent implements OnInit {
 
   giveUltPoint(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       const player = ret.teams[teamIndex].players[playerIndex];
       player.currUltPoints++;
       player.ultReady = player.currUltPoints == player.maxUltPoints;
@@ -742,7 +744,7 @@ export class TestingComponent implements OnInit {
 
   useUltimate(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       const player = ret.teams[teamIndex].players[playerIndex];
       player.currUltPoints = 0;
       player.ultReady = false;
@@ -753,7 +755,7 @@ export class TestingComponent implements OnInit {
   armorOrder = ["Heavy", "Regen", "Light", "None"];
   changeShield(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       const player = ret.teams[teamIndex].players[playerIndex];
       let i = this.armorOrder.findIndex((e) => e == player.armorName);
       i++;
@@ -767,7 +769,7 @@ export class TestingComponent implements OnInit {
   weaponOrder = ["Vandal", "Operator", "Classic", "Spectre"];
   changeWeapon(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       const player = ret.teams[teamIndex].players[playerIndex];
       let i = this.weaponOrder.findIndex((e) => e == player.highestWeapon);
       i++;
@@ -779,7 +781,7 @@ export class TestingComponent implements OnInit {
 
   makeCaptain(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       const player = ret.teams[teamIndex].players[playerIndex];
       ret.teams[teamIndex].players.forEach((e: any) => (e.isCaptain = false));
       player.isCaptain = true;
@@ -789,7 +791,7 @@ export class TestingComponent implements OnInit {
 
   spectate(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       const player = ret.teams[teamIndex].players[playerIndex];
       ret.teams[0].players.forEach((e: any) => (e.isObserved = false));
       ret.teams[1].players.forEach((e: any) => (e.isObserved = false));
@@ -800,7 +802,7 @@ export class TestingComponent implements OnInit {
 
   giveSpike(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       const player = ret.teams[teamIndex].players[playerIndex];
       ret.teams[teamIndex].players.forEach((e: any) => (e.hasSpike = false));
       player.hasSpike = true;
@@ -810,7 +812,7 @@ export class TestingComponent implements OnInit {
 
   changeStats(teamIndex: number, playerIndex: number) {
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       const player = ret.teams[teamIndex].players[playerIndex];
       player.kills = Math.floor(Math.random() * 20);
       player.deaths = Math.floor(Math.random() * 20);
@@ -824,7 +826,7 @@ export class TestingComponent implements OnInit {
   startTimeoutTimer() {
     this.timeoutTimerRef = setInterval(() => {
       this.dataModel.match.update((v) => {
-        const ret = v;
+        const ret = structuredClone(v);
         ret.timeoutState.timeRemaining--;
         return ret;
       });
@@ -837,7 +839,7 @@ export class TestingComponent implements OnInit {
   stopTimeoutTimer() {
     clearInterval(this.timeoutTimerRef);
     this.dataModel.match.update((v) => {
-      const ret = v;
+      const ret = structuredClone(v);
       ret.timeoutState.techPause = false;
       ret.timeoutState.leftTeam = false;
       ret.timeoutState.rightTeam = false;
@@ -854,14 +856,14 @@ export class TestingComponent implements OnInit {
       clearTimeout(this.toastTimerRef);
       this.toastTimerRef = undefined;
       this.dataModel.match.update((v) => {
-        const ret = v;
+        const ret = structuredClone(v);
         ret.toastInfo.active = false;
         return ret;
       });
     } else {
       // Activate
       this.dataModel.match.update((v) => {
-        const ret = v;
+        const ret = structuredClone(v);
         ret.toastInfo.active = true;
         ret.toastInfo.title = "";
         ret.toastInfo.message = "This is a live toast preview. Thanks for using Spectra!";
@@ -876,7 +878,7 @@ export class TestingComponent implements OnInit {
         clearTimeout(this.toastTimerRef);
         this.toastTimerRef = setTimeout(() => {
           this.dataModel.match.update((v) => {
-            const ret = v;
+            const ret = structuredClone(v);
             ret.toastInfo.active = false;
             return ret;
           });

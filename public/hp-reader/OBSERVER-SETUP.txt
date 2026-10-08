@@ -1,0 +1,26 @@
+SPECTRA OCR OBSERVER — experimental approximate HP
+
+HOST
+Both PCs join the same Radmin VPN network.
+Start the server from the updated Spectra client's More / Overlay Preview panel.
+Copy the displayed host receiver URL, group and pairing key to your observer.
+Keep the Live HP Overlay open for Spectra player, death and round state.
+Allow inbound TCP 5211 only from the observer's VPN IP on the Radmin interface.
+Do not disable the firewall or publish this HTTP endpoint on the Internet.
+
+OBSERVER — WINDOWS APP
+Install and open Spectra OCR Observer.
+Enter the host receiver URL, match group and pairing key, then Connect to host.
+Select the HUD-enabled VALORANT window, bind exact player names and Start readers.
+Verify bindings after side swaps and keep the app open while sending readings.
+
+LEGACY PORTABLE ZIP
+Run scripts/start-ocr-observer.cmd, then open
+http://127.0.0.1:5212/hp-reader/dual.html in Chrome or Edge.
+This alternative uses the bundled runtime and an external browser.
+
+Pair again after host restart: the key changes.
+Only HP readings are transmitted, not video. HP is approximate; amber is stale.
+Spectra owns deaths and round state. Stop competing readers.
+No automatic agent/name recognition or side-swap rebinding is included.
+See README.md for source and build instructions.

@@ -194,6 +194,7 @@
         class="reveal-logo h-full w-[6vh] max-w-[6vh] opacity-0"
         [src]="bannerTopIconUrl()"
         (load)="onImageLoad()"
+        (error)="onImageLoad()"
       />
 
       <!-- Animated flash background - above content -->

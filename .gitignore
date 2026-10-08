@@ -4,6 +4,8 @@
 /out-tsc
 /bazel-out
 /coverage
+/Spectra Client/
+/public/hp-reader/downloads/
 
 # Dependencies and package-manager state
 /node_modules
